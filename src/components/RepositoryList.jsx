@@ -1,25 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RepositoryItem } from "./RepositoryItem";
 
-export function RepositoryList() {
-  const [counter, setCounter] = useState(0);
+import "../styles/repositories.scss";
 
-  function increment() {
-    setCounter(counter + 1);
-  }
+export function RepositoryList() {
+  const [repositories, setRepositories] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.github.com/users/rocketseat/repos")
+      .then((response) => response.json())
+      .then((data) => setRepositories(data));
+  }, []);
 
   return (
-    <section className="repositoy-list">
+    <section className="repository-list">
       <h1>Lista de repositórios</h1>
       <ul>
-        <RepositoryItem repository="ebba" />
-        <RepositoryItem repository="Juca" />
-        <RepositoryItem repository="Bolinha" />
+        {repositories.map((repository) => (
+          <RepositoryItem key={repository.id} repository={repository} />
+        ))}
       </ul>
-      <div>
-        <p>{counter}</p>
-        <button onClick={increment}>Adicionar</button>
-      </div>
     </section>
   );
 }
